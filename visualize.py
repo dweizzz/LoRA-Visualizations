@@ -106,11 +106,11 @@ for (row_name, row_y, row_h), row_vals in zip(ROW_DEFS, ROW_DATA):
         else:
             label(cx, cy, val, size=14, color=BADGE_FG, bg=BADGE_BG)
 
-    # Subtle vertical dividers between data columns
-    for i in range(1, 3):
+    # Vertical dividers: after col 0 (label) and between data columns
+    for i in range(0, 3):
         dx = COL_X[i+1] - GAP/2
-        ax.plot([dx, dx], [row_y+0.15, row_y+row_h-0.15],
-                color=ROW_BDR, lw=1.2, zorder=3)
+        ax.plot([dx, dx], [row_y+0.05, row_y+row_h-0.05],
+                color=ROW_BDR, lw=1.8, zorder=3, solid_capstyle='butt')
 
 plt.tight_layout(pad=0)
 plt.savefig('experiment_table.png', dpi=200, bbox_inches='tight',
