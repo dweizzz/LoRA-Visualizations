@@ -51,15 +51,15 @@ for b, (col, label, color) in enumerate(zip(COLS, DISPLAY, COLORS)):
                 f"{v:.1f}", ha="center", va="bottom", fontsize=7.5, color="#333333",
             )
 
-# Dashed reference line at LoRA Ours per group
+# Dashed reference line at LoRA Paper per group
 for i, row in enumerate(acc_rows):
-    lo = row["LoRA_Ours"]
+    lo = row["LoRA_Paper"]
     if lo is not None:
         span = 2 * bar_w + gap + 0.02
         ax.hlines(
             lo, x[i] - span, x[i] + span,
-            colors="#E67E22", linestyles="dashed", linewidth=1.8, alpha=0.8,
-            label="LoRA Our Results (ref.)" if i == 0 else "_nolegend_",
+            colors="#FAD7A0", linestyles="dashed", linewidth=1.8, alpha=0.8,
+            label="LoRA Paper Baseline (ref.)" if i == 0 else "_nolegend_",
             zorder=5,
         )
 
@@ -78,8 +78,8 @@ legend_handles = [
     mpatches.Patch(color=COLORS[1], label="FFT – Our Results"),
     mpatches.Patch(color=COLORS[2], label="LoRA – Paper Baseline"),
     mpatches.Patch(color=COLORS[3], label="LoRA – Our Results"),
-    plt.Line2D([0], [0], color="#E67E22", linestyle="dashed",
-               linewidth=1.8, label="LoRA Ours (reference line)"),
+    plt.Line2D([0], [0], color="#FAD7A0", linestyle="dashed",
+               linewidth=1.8, label="LoRA Paper Baseline (reference line)"),
 ]
 ax.legend(handles=legend_handles, loc="upper right", fontsize=9.5, framealpha=0.95)
 
