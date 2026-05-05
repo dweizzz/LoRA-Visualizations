@@ -1,0 +1,15 @@
+[
+  {"Model": "ViT / CIFAR-10", "Metric": "Accuracy", "FFT_Paper": null, "FFT_Ours": 0.9868, "LoRA_Paper": null, "LoRA_Ours": 0.9830},
+  {"Model": "RoBERTa / MNLI", "Metric": "Accuracy", "FFT_Paper": 87.6, "FFT_Ours": 87.7, "LoRA_Paper": 87.5, "LoRA_Ours": 85.9},
+  {"Model": "RoBERTa / SST-2", "Metric": "Accuracy", "FFT_Paper": 94.8, "FFT_Ours": 93.9, "LoRA_Paper": 95.1, "LoRA_Ours": 94.0},
+  {"Model": "GPT-2 Small / E2E", "Metric": "BLEU", "FFT_Paper": null, "FFT_Ours": 53.68, "LoRA_Paper": null, "LoRA_Ours": 52.98},
+  {"Model": "GPT-2 Small / E2E", "Metric": "NIST", "FFT_Paper": null, "FFT_Ours": 6.02, "LoRA_Paper": null, "LoRA_Ours": 3.11},
+  {"Model": "GPT-2 Small / E2E", "Metric": "METEOR", "FFT_Paper": null, "FFT_Ours": 69.58, "LoRA_Paper": null, "LoRA_Ours": 48.99},
+  {"Model": "GPT-2 Small / E2E", "Metric": "ROUGE-L", "FFT_Paper": null, "FFT_Ours": 62.55, "LoRA_Paper": null, "LoRA_Ours": 62.84},
+  {"Model": "GPT-2 Small / E2E", "Metric": "CIDEr", "FFT_Paper": null, "FFT_Ours": 1.17, "LoRA_Paper": null, "LoRA_Ours": 1.04},
+  {"Model": "GPT-2 Medium / E2E", "Metric": "BLEU", "FFT_Paper": 68.2, "FFT_Ours": 54.11, "LoRA_Paper": 70.4, "LoRA_Ours": 53.68},
+  {"Model": "GPT-2 Medium / E2E", "Metric": "NIST", "FFT_Paper": 8.62, "FFT_Ours": 6.02, "LoRA_Paper": 8.85, "LoRA_Ours": 6.05},
+  {"Model": "GPT-2 Medium / E2E", "Metric": "METEOR", "FFT_Paper": 46.2, "FFT_Ours": 69.1, "LoRA_Paper": 46.8, "LoRA_Ours": 65.18},
+  {"Model": "GPT-2 Medium / E2E", "Metric": "ROUGE-L", "FFT_Paper": 71.0, "FFT_Ours": 62.03, "LoRA_Paper": 71.8, "LoRA_Ours": 63.33},
+  {"Model": "GPT-2 Medium / E2E", "Metric": "CIDEr", "FFT_Paper": 2.47, "FFT_Ours": 1.23, "LoRA_Paper": 2.53, "LoRA_Ours": 1.10}
+]
