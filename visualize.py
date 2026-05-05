@@ -7,35 +7,41 @@ plt.rcParams.update({
 })
 
 # ── Palette ───────────────────────────────────────────────────────────────────
-BG        = '#F5F7FA'
-HDR_BG    = '#1E3A5F'
-HDR_FG    = '#FFFFFF'
-HDR_ACNT  = '#E8A838'     # warm gold for "Model" label
-ROBERTA   = '#B03A2E'     # deep crimson
-GPT2C     = '#1A7A5E'     # forest teal
-VITC      = '#6C3483'     # deep purple
-ROW_BG    = '#FFFFFF'
-ROW_BDR   = '#D1D9E6'
-BADGE_BG  = '#EBF0F8'
-BADGE_FG  = '#1E3A5F'
-VS_C      = '#C0622A'     # dark burnt orange
+BG       = '#F5F7FA'
+HDR_BG   = '#1E3A5F'
+ROBERTA  = '#B03A2E'
+GPT2C    = '#1A7A5E'
+VITC     = '#6C3483'
+ROW_BG   = '#FFFFFF'
+ROW_BDR  = '#D1D9E6'
+BADGE_BG = '#EBF0F8'
+BADGE_FG = '#1E3A5F'
+VS_C     = '#C0622A'
 
 # ── Figure ────────────────────────────────────────────────────────────────────
-fig, ax = plt.subplots(figsize=(18, 7.5))
+fig, ax = plt.subplots(figsize=(7, 5.2))
 fig.patch.set_facecolor(BG)
 ax.set_facecolor(BG)
-ax.set_xlim(0, 18)
-ax.set_ylim(0, 7.5)
+ax.set_xlim(0, 7)
+ax.set_ylim(0, 5.2)
 ax.axis('off')
 
 # ── Layout ────────────────────────────────────────────────────────────────────
-LX      = 0.4
-COL_X   = [LX, 3.2, 7.0, 12.0]
-COL_W   = [2.5, 3.4, 4.6, 4.8]
-HDR_Y   = 6.2;  HDR_H = 1.0
-ROW_H   = 1.8
-ROW_Y   = [4.28, 2.36, 0.44]
-TOTAL_W = COL_X[-1] + COL_W[-1] - LX   # 16.4
+# 4 equal-width columns: [row label | RoBERTa | GPT-2 | ViT]
+LX  = 0.2
+CW  = 1.5
+GAP = 0.15
+COL_X   = [LX + i * (CW + GAP) for i in range(4)]   # [0.2, 1.85, 3.5, 5.15]
+TOTAL_W = COL_X[-1] + CW - LX                        # 6.45
+
+# 4 rows: [header | Hardware | Experiment Type | Benchmark Dataset]
+# Row definitions: (label_text, bottom_y, height)
+HDR_Y  = 4.10;  HDR_H = 0.85
+ROW_DEFS = [
+    ('Hardware',          3.20, 0.80),
+    ('Experiment\nType',  1.40, 1.70),   # taller: stacked badges
+    ('Benchmark\nDataset',0.20, 1.10),
+]
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 def rrect(x, y, w, h, fc, ec='none', lw=0, z=2, pad=0.08):
@@ -43,62 +49,68 @@ def rrect(x, y, w, h, fc, ec='none', lw=0, z=2, pad=0.08):
         (x, y), w, h, boxstyle=f'round,pad={pad}',
         facecolor=fc, edgecolor=ec, linewidth=lw, zorder=z))
 
-def label(x, y, s, size=13, color='#1E3A5F', bold=True, z=5,
-          bg=None, bgec='none', bglw=0):
+def label(x, y, s, size=13, color='white', bold=True, z=5, bg=None, bgec='none', bglw=0):
     kw = dict(ha='center', va='center', fontsize=size, zorder=z,
               fontweight='bold' if bold else 'normal', color=color)
     if bg:
-        kw['bbox'] = dict(boxstyle='round,pad=0.5',
-                          facecolor=bg, edgecolor=bgec, linewidth=bglw)
+        kw['bbox'] = dict(boxstyle='round,pad=0.45', facecolor=bg,
+                          edgecolor=bgec, linewidth=bglw)
     ax.text(x, y, s, **kw)
 
-# ── Header ────────────────────────────────────────────────────────────────────
-rrect(LX-0.1, HDR_Y, TOTAL_W+0.2, HDR_H, fc=HDR_BG, z=1, pad=0.1)
+# ── Header row: model name columns ───────────────────────────────────────────
+rrect(LX-0.1, HDR_Y, TOTAL_W+0.2, HDR_H, fc=ROW_BG, ec=ROW_BDR, lw=1.5, z=1, pad=0.07)
 
-HEADERS = ['Model', 'Hardware', 'Experiment Type', 'Benchmark Dataset']
-for cx_base, cw, head in zip(COL_X, COL_W, HEADERS):
-    label(cx_base + cw/2, HDR_Y + HDR_H/2, head,
-          size=19, color=HDR_ACNT if head == 'Model' else HDR_FG, z=4)
+for i, (name, color) in enumerate(
+        zip(['', 'RoBERTa', 'GPT-2', 'ViT'], [None, ROBERTA, GPT2C, VITC])):
+    cx = COL_X[i] + CW / 2
+    cy = HDR_Y + HDR_H / 2
+    if color:
+        rrect(COL_X[i]+0.12, HDR_Y+0.10, CW-0.24, HDR_H-0.20, fc=color, z=3, pad=0.1)
+        label(cx, cy, name, size=16, color='white', z=4)
 
-for i in range(1, 4):
-    dx = COL_X[i] - 0.18
-    ax.plot([dx, dx], [HDR_Y+0.2, HDR_Y+HDR_H-0.2], color='#4A6A8A', lw=1.5, zorder=4)
-
-# ── Data rows ─────────────────────────────────────────────────────────────────
-ROWS = [
-    dict(name='RoBERTa', color=ROBERTA, gpu='A100', p1='Full FT',  p2='LoRA',   goal='SST-2 / MNLI'),
-    dict(name='GPT-2',   color=GPT2C,   gpu='T4',   p1='Small',    p2='Medium', goal='E2E NLG'),
-    dict(name='ViT',     color=VITC,    gpu='T4',   p1='Generalization Test', p2=None, goal='CIFAR-10'),
+# ── Data rows ────────────────────────────────────────────────────────────────
+ROW_DATA = [
+    # Hardware
+    [None, 'A100', 'T4', 'T4'],
+    # Experiment Type: (p1, p2) tuples for vs comparisons
+    [None, ('Full FT', 'LoRA'), ('Small', 'Medium'), ('Generalization\nTest', None)],
+    # Benchmark Dataset
+    [None, 'SST-2 / MNLI', 'E2E NLG', 'CIFAR-10'],
 ]
 
-for row, ry in zip(ROWS, ROW_Y):
-    c  = row['color']
-    cy = ry + ROW_H / 2
+for (row_name, row_y, row_h), row_vals in zip(ROW_DEFS, ROW_DATA):
+    cy = row_y + row_h / 2
 
-    # Row: white background, light border
-    rrect(LX-0.1, ry, TOTAL_W+0.2, ROW_H, fc=ROW_BG, ec=ROW_BDR, lw=1.5, z=1, pad=0.07)
-    # Col 0: colored model name box
-    box_x = LX - 0.04
-    box_w = COL_X[0] + COL_W[0] - box_x - 0.2
-    rrect(box_x, ry + 0.1, box_w, ROW_H - 0.2, fc=c, z=2, pad=0.12)
-    label(box_x + box_w/2, cy, row['name'], size=24, color='white', z=5)
+    # Row background
+    rrect(LX-0.1, row_y, TOTAL_W+0.2, row_h, fc=ROW_BG, ec=ROW_BDR, lw=1.5, z=1, pad=0.07)
 
-    # Col 1: Hardware
-    cx1 = COL_X[1] + COL_W[1] / 2
-    label(cx1, cy, row['gpu'], size=21, color=BADGE_FG, bg=BADGE_BG)
+    # Row label (col 0)
+    lbx = COL_X[0] - 0.05
+    lbw = CW - 0.1
+    ax.text(lbx + lbw/2, cy, row_name, ha='center', va='center',
+            fontsize=13, fontweight='bold', color=HDR_BG, zorder=5)
 
-    # Col 2: Experiment Type
-    cx2 = COL_X[2] + COL_W[2] / 2
-    if row['p2']:
-        label(cx2 - 1.2, cy, row['p1'], size=19, color=BADGE_FG, bg=BADGE_BG)
-        label(cx2,        cy, 'vs',      size=20, color=VS_C)
-        label(cx2 + 1.2, cy, row['p2'], size=19, color=BADGE_FG, bg=BADGE_BG)
-    else:
-        label(cx2, cy, row['p1'], size=19, color=BADGE_FG, bg=BADGE_BG)
+    # Data cells (cols 1–3)
+    for col_x, val in zip(COL_X[1:], row_vals[1:]):
+        cx = col_x + CW / 2
 
-    # Col 3: Benchmark Dataset
-    cx3 = COL_X[3] + COL_W[3] / 2
-    label(cx3, cy, row['goal'], size=21, color=BADGE_FG, bg=BADGE_BG)
+        if isinstance(val, tuple):
+            p1, p2 = val
+            if p2:
+                # Stacked: badge / vs / badge
+                label(cx, cy + 0.48, p1, size=13, color=BADGE_FG, bg=BADGE_BG)
+                label(cx, cy,        'vs', size=13, color=VS_C)
+                label(cx, cy - 0.48, p2, size=13, color=BADGE_FG, bg=BADGE_BG)
+            else:
+                label(cx, cy, p1, size=13, color=BADGE_FG, bg=BADGE_BG)
+        else:
+            label(cx, cy, val, size=14, color=BADGE_FG, bg=BADGE_BG)
+
+    # Subtle vertical dividers between data columns
+    for i in range(1, 3):
+        dx = COL_X[i+1] - GAP/2
+        ax.plot([dx, dx], [row_y+0.15, row_y+row_h-0.15],
+                color=ROW_BDR, lw=1.2, zorder=3)
 
 plt.tight_layout(pad=0)
 plt.savefig('experiment_table.png', dpi=200, bbox_inches='tight',
