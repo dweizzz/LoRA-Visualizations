@@ -66,9 +66,14 @@ for i, row in enumerate(acc_rows):
 ax.set_xticks(x)
 ax.set_xticklabels(group_labels, fontsize=12)
 ax.set_ylabel("Accuracy (%)", fontsize=12)
-ax.set_title(
+ax.text(
+    0.5, 0.97,
     "Model Performance: NLP & ViT Tasks\n(FFT vs. LoRA — Paper Baselines vs. Our Results)",
-    fontsize=14, fontweight="bold", pad=14,
+    fontsize=14, fontweight="bold",
+    ha="center", va="top",
+    transform=ax.transAxes,
+    bbox=dict(facecolor="white", edgecolor="none", pad=4),
+    zorder=10,
 )
 ax.set_ylim(80, 102)
 ax.yaxis.set_minor_locator(plt.MultipleLocator(1))
